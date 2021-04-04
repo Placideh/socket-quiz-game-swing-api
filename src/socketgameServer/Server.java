@@ -21,10 +21,12 @@ public class Server  {
      */
     public static void main(String[] args) throws Exception  {
         
-        ServerSocket  ss=new ServerSocket();
+        ServerSocket  ss=new ServerSocket(21172);
         while(true){
             Socket s=ss.accept();
-            
+            Operation ops=new Operation(s);
+            ops.start();
+            System.out.println("Server Started...");
             
         }
        

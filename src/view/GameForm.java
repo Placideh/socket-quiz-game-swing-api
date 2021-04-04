@@ -5,32 +5,50 @@
  */
 package view;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
-import model.GuessGame;
+import model.GuessGame; 
 import socketgameServer.Operation;
 
 /**
  *
  * @author placideh
  */
-public class GameForm extends javax.swing.JFrame {
+public class GameForm extends javax.swing.JFrame implements Runnable{
     private static int nextQuestion=1;
      private static long date2=0;
      private static int answer=0;
      private static long result=0;
      private ArrayList<GuessGame> list=new ArrayList<>();
      GuessGame gues;
+      OutputStream out;
+     InputStream in;
+     Socket s;
     /**
      * Creates new form GameForm
      */
-    public GameForm() {
+    public GameForm() throws IOException {
         initComponents();
-        Operation ops = new Operation();
-        jTextField1.setText(ops.questions(nextQuestion));
+        try{
+            s=new Socket("localhost",21172);
+           in= s.getInputStream();
+           out= s.getOutputStream();
+            out.write(nextQuestion);
+            
+        }catch(Exception e){
+            
+        }
+//        Operation ops = new Operation();
+//        jTextField1.setText(ops.questions(nextQuestion));
+        jTextField1.setText(in.toString());
         jTextField1.setEditable(false);
         jTextArea1.setEditable(false);
         jTextField3.requestFocusInWindow();
+//        setVisible(true);
         
     }
 
@@ -163,40 +181,30 @@ public class GameForm extends javax.swing.JFrame {
         
         
     }//GEN-LAST:event_jButton2ActionPerformed
-
+    @Override
+    public void run(){
+        try {
+            new GameForm().setVisible(true);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        try{
+            while(true){
+//            out.write(nextQuestion);
+            
+            jTextField1.setText(in+"");                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+            }
+        }catch(Exception ex){
+            
+        }
+    }
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GameForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GameForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GameForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GameForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GameForm().setVisible(true);
-            }
-        });
+    public static void main(String args[]) throws IOException {
+        GameForm game=new GameForm();
+        Thread thread = new Thread(game);
+        thread.start();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

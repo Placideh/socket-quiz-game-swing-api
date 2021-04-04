@@ -5,6 +5,8 @@
  */
 package socketgameServer;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +18,8 @@ import model.GuessGame;
  */
 public class Operation extends Thread {
     Socket s;
+    OutputStream out;
+    InputStream in;
     
     Operation(Socket s){
         this.s=s;
@@ -29,7 +33,20 @@ public class Operation extends Thread {
     public void run() {
         super.run(); //To change body of generated methods, choose Tools | Templates.
         try{
+            out=s.getOutputStream();
+            in=s.getInputStream();
+           
+//                out.write(questions(in.read()).getBytes());
+                byte[]msg=new byte[64];
+                while(true){
+                    int len=in.read(msg);
+                    if(len<=0)break;
+//                    out.write(msg,0,len);
+                    out.write(questions(1).getBytes());
+                    out.flush();
+                }
             
+            s.close();
         }catch(Exception e){
             e.printStackTrace();
             
@@ -147,23 +164,23 @@ public class Operation extends Thread {
 //        return glist;
 //    }
     public ArrayList showWinner(ArrayList<GuessGame> list){
-//        GuessGame temp=new GuessGame();
-//        GuessGame temp2=new GuessGame();
-//        GuessGame temp3=new GuessGame();
-////       GuessGame[] geussArr=(GuessGame[]) list.toArray();
-//      for(int i=0;i<list.size();i++){
-//          for(int j=0;j<list.size()-1;j++){
-//              if(list.get(j).getMarks()+list.get(j).getTimeTaken()>list.get(j+1).getMarks()+list.get(j+1).getTimeTaken()){
-//                Arrays.sort(list.toArray());
-//                temp=list.get(j);
-//                temp2=list.get(j+1);
-//                temp3=temp;
-//                temp=temp2;
-//                temp2=temp3;
-//                  
-//              }
-//          }
-//      }
+        GuessGame temp=new GuessGame();
+        GuessGame temp2=new GuessGame();
+        GuessGame temp3=new GuessGame();
+//       GuessGame[] geussArr=(GuessGame[]) list.toArray();
+      for(int i=0;i<list.size();i++){
+          for(int j=0;j<list.size()-1;j++){
+              if(list.get(j).getMarks()+list.get(j).getTimeTaken()>list.get(j+1).getMarks()+list.get(j+1).getTimeTaken()){
+                Arrays.sort(list.toArray());
+                temp=list.get(j);
+                temp2=list.get(j+1);
+                temp3=temp;
+                temp=temp2;
+                temp2=temp3;
+                  
+              }
+          }
+      }
        ArrayList<GuessGame> glist=new ArrayList<>();
        for(int i=0;i<list.size();i++){
            long markPercent=(list.get(i).getMarks()*100)/50;
