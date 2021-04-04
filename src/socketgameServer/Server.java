@@ -7,6 +7,8 @@ package socketgameServer;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import model.GuessGame;
 
 /**
  *
@@ -25,7 +27,11 @@ public class Server  {
             
             
         }
+       
     }
-
+    public ArrayList<GuessGame> list() {
+         
+        return new ArrayList<GuessGame>();
+    }
    
 }
