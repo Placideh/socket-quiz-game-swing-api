@@ -5,8 +5,13 @@
  */
 package socketgameServer;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +25,10 @@ public class Operation extends Thread {
     Socket s;
     OutputStream out;
     InputStream in;
-    
+    DataOutputStream dout;
+    DataInputStream din;
+    PrintWriter pout;
+    BufferedReader bin;
     Operation(Socket s){
         this.s=s;
         
@@ -33,17 +41,39 @@ public class Operation extends Thread {
     public void run() {
         super.run(); //To change body of generated methods, choose Tools | Templates.
         try{
-            out=s.getOutputStream();
-            in=s.getInputStream();
-           
-//                out.write(questions(in.read()).getBytes());
-                byte[]msg=new byte[64];
                 while(true){
-                    int len=in.read(msg);
-                    if(len<=0)break;
-//                    out.write(msg,0,len);
-                    out.write(questions(1).getBytes());
-                    out.flush();
+                    in = s.getInputStream();
+//                    din=new DataInputStream(in);
+                    bin = new BufferedReader(new InputStreamReader(in));
+//                    int quest = Integer.parseInt(bin.readLine());
+//                    int answer=din.read();
+                    out = s.getOutputStream();
+                    
+                    pout = new PrintWriter(out,true);
+//                    if (quest > 0) {
+//                        pout.println(questions(quest));
+//                        pout.flush();
+////                        break;
+//                    }
+                     if(bin.readLine().contains("users")){
+                        String question,answer;
+                        question=bin.readLine();
+                        answer=bin.readLine();
+                        int que=Integer.parseInt(question);
+                        int ans=Integer.parseInt(answer);
+                        pout.println("users");
+                        pout.println(questions(que));
+                        pout.println(answers(que,ans));
+                        pout.flush();
+                        
+                    }else{
+                        break;
+                    } 
+                   
+//                    dout=new DataOutputStream(out);
+//                    dout.writeUTF(questions(quest));
+//                    dout.flush();
+                    
                 }
             
             s.close();

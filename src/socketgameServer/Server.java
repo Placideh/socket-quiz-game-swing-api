@@ -25,8 +25,8 @@ public class Server  {
         while(true){
             Socket s=ss.accept();
             Operation ops=new Operation(s);
-            ops.start();
             System.out.println("Server Started...");
+            ops.start();
             
         }
        

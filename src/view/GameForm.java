@@ -5,9 +5,14 @@
  */
 package view;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,16 +23,20 @@ import socketgameServer.Operation;
  *
  * @author placideh
  */
-public class GameForm extends javax.swing.JFrame implements Runnable{
+public class GameForm extends javax.swing.JFrame {
     private static int nextQuestion=1;
      private static long date2=0;
      private static int answer=0;
      private static long result=0;
-     private ArrayList<GuessGame> list=new ArrayList<>();
+     private static ArrayList<GuessGame> list=new ArrayList<>();
      GuessGame gues;
-      OutputStream out;
+     OutputStream out;
      InputStream in;
      Socket s;
+     DataInputStream din;
+     DataOutputStream dout;
+     PrintWriter pout;
+     BufferedReader bin;
     /**
      * Creates new form GameForm
      */
@@ -35,20 +44,33 @@ public class GameForm extends javax.swing.JFrame implements Runnable{
         initComponents();
         try{
             s=new Socket("localhost",21172);
-           in= s.getInputStream();
            out= s.getOutputStream();
-            out.write(nextQuestion);
+           dout=new DataOutputStream(out);
+            pout = new PrintWriter(out,true);
+//           dout.write(nextQuestion);
+           pout.println("users");
+           pout.println(nextQuestion);
+            pout.println(answer + "");
+           pout.flush();
+           in= s.getInputStream();
+//           din=new DataInputStream(in);
+           bin=new BufferedReader(new InputStreamReader(in));
+//           String read=din.readUTF();
+           String read="";
+            if (bin.readLine().contains("users")) {
+                read = bin.readLine();
+                result += Integer.parseInt(bin.readLine());
+
+            }
+           jTextField1.setText(read);
             
         }catch(Exception e){
             
         }
-//        Operation ops = new Operation();
-//        jTextField1.setText(ops.questions(nextQuestion));
-        jTextField1.setText(in.toString());
+        
         jTextField1.setEditable(false);
         jTextArea1.setEditable(false);
         jTextField3.requestFocusInWindow();
-//        setVisible(true);
         
     }
 
@@ -155,18 +177,48 @@ public class GameForm extends javax.swing.JFrame implements Runnable{
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        Operation ops=new Operation();
-        String name=jTextField3.getText();
-        answer=Integer.parseInt(jTextField2.getText());
-        Date date=new Date();
-        date2=date.getTime();
-        result+=ops.answers(nextQuestion, answer);
-         gues=new GuessGame(name,result,date2);
-        nextQuestion+=1;
-        jTextField1.setText(ops.questions(nextQuestion));
-//        list.add(gues);
-        jTextField2.setText("");
-        jTextField2.requestFocusInWindow();
+        try{
+            Operation ops = new Operation();
+            String name = jTextField3.getText();
+            answer = Integer.parseInt(jTextField2.getText());
+            Date date = new Date();
+            date2 = date.getTime();
+//            result += ops.answers(nextQuestion, answer);
+            out = s.getOutputStream();
+            dout = new DataOutputStream(out);
+            pout=new PrintWriter(out,true);
+            bin = new BufferedReader(new InputStreamReader(in));
+            pout.println("users");
+            pout.println(nextQuestion+"");
+            pout.println(answer+"");
+//            dout.writeUTF("user");
+//            dout.writeUTF(nextQuestion+"");
+//            dout.writeUTF(answer+"");
+//            dout.flush();
+            pout.flush();
+            
+            in = s.getInputStream();
+//            din = new DataInputStream(inInteger.parseInt(bin.readLine());
+            String read ="";
+           
+//            result += ops.answers(nextQuestion, answer);
+             if(bin.readLine().contains("users")){
+                 read=bin.readLine();
+                 result +=Integer.parseInt(bin.readLine());
+                 
+             }
+            gues = new GuessGame(name, result, date2);
+            nextQuestion += 1;
+//            jTextField1.setText(ops.questions(nextQuestion));
+            jTextField1.setText(read);
+                    list.add(gues);
+
+            jTextField2.setText("");
+            jTextField2.requestFocusInWindow();
+        }catch(Exception e){
+            
+        }
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -181,30 +233,45 @@ public class GameForm extends javax.swing.JFrame implements Runnable{
         
         
     }//GEN-LAST:event_jButton2ActionPerformed
-    @Override
-    public void run(){
-        try {
-            new GameForm().setVisible(true);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        try{
-            while(true){
-//            out.write(nextQuestion);
-            
-            jTextField1.setText(in+"");                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
-            }
-        }catch(Exception ex){
-            
-        }
-    }
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) throws IOException {
-        GameForm game=new GameForm();
-        Thread thread = new Thread(game);
-        thread.start();
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(GameForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(GameForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(GameForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(GameForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    new GameForm().setVisible(true);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        System.out.println(list);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
