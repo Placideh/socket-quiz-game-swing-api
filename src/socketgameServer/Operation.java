@@ -14,7 +14,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import model.GuessGame;
 
 /**
@@ -29,6 +28,7 @@ public class Operation extends Thread {
     DataInputStream din;
     PrintWriter pout;
     BufferedReader bin;
+    private static int result;
     Operation(Socket s){
         this.s=s;
         
@@ -43,38 +43,30 @@ public class Operation extends Thread {
         try{
                 while(true){
                     in = s.getInputStream();
-//                    din=new DataInputStream(in);
                     bin = new BufferedReader(new InputStreamReader(in));
-//                    int quest = Integer.parseInt(bin.readLine());
-//                    int answer=din.read();
                     out = s.getOutputStream();
-                    
                     pout = new PrintWriter(out,true);
-//                    if (quest > 0) {
-//                        pout.println(questions(quest));
-//                        pout.flush();
-////                        break;
-//                    }
+                    
                      if(bin.readLine().contains("users")){
                         String question,answer;
-                        question=bin.readLine();
                         answer=bin.readLine();
-                        int que=Integer.parseInt(question);
+                        question=bin.readLine();
                         int ans=Integer.parseInt(answer);
+                        int que=Integer.parseInt(question);
+                        int res=que-1;
                         pout.println("users");
+                        int answerReturned=answers(res,ans);
+                        pout.println(answerReturned);
                         pout.println(questions(que));
-                        pout.println(answers(que,ans));
                         pout.flush();
                         
-                    }else{
+                    } else{
                         break;
                     } 
-                   
-//                    dout=new DataOutputStream(out);
-//                    dout.writeUTF(questions(quest));
-//                    dout.flush();
                     
                 }
+                
+               
             
             s.close();
         }catch(Exception e){
@@ -82,9 +74,11 @@ public class Operation extends Thread {
             
         }
     }
+    
     public String questions(int question){
         String q="";
         switch(question){
+            
             case 1:{
                  q="12*3+10=?";
                 break;
@@ -115,9 +109,13 @@ public class Operation extends Thread {
         return q;
     }
     public int answers(int question,int  answer){
-        int result = 0;
+         
         int q=0;
         switch (question) {
+            case 0:{
+                result+=0;
+                break;
+            }
             case 1: {
                 q = 12*3+10;
                 if (q == answer) {
@@ -159,6 +157,7 @@ public class Operation extends Thread {
                 q = 15/3;
                 if (q == answer) {
                     result += 10;
+                    
                 }else {
                     result += 0;
                 }
@@ -193,29 +192,31 @@ public class Operation extends Thread {
 //       }
 //        return glist;
 //    }
-    public ArrayList showWinner(ArrayList<GuessGame> list){
-        GuessGame temp=new GuessGame();
-        GuessGame temp2=new GuessGame();
-        GuessGame temp3=new GuessGame();
-//       GuessGame[] geussArr=(GuessGame[]) list.toArray();
-      for(int i=0;i<list.size();i++){
-          for(int j=0;j<list.size()-1;j++){
-              if(list.get(j).getMarks()+list.get(j).getTimeTaken()>list.get(j+1).getMarks()+list.get(j+1).getTimeTaken()){
-                Arrays.sort(list.toArray());
-                temp=list.get(j);
-                temp2=list.get(j+1);
-                temp3=temp;
-                temp=temp2;
-                temp2=temp3;
-                  
-              }
-          }
-      }
+    public ArrayList showWinner(GuessGame game){
+//        GuessGame temp=new GuessGame();
+//        GuessGame temp2=new GuessGame();
+//        GuessGame temp3=new GuessGame();
+////       GuessGame[] geussArr=(GuessGame[]) list.toArray();
+//      for(int i=0;i<list.size();i++){
+//          for(int j=0;j<list.size()-1;j++){
+//              if(list.get(j).getMarks()+list.get(j).getTimeTaken()>list.get(j+1).getMarks()+list.get(j+1).getTimeTaken()){
+//                Arrays.sort(list.toArray());
+//                temp=list.get(j);
+//                temp2=list.get(j+1);
+//                temp3=temp;
+//                temp=temp2;
+//                temp2=temp3;
+//                  
+//              }
+//          }
+//      }
        ArrayList<GuessGame> glist=new ArrayList<>();
-       for(int i=0;i<list.size();i++){
-           long markPercent=(list.get(i).getMarks()*100)/50;
-           list.get(i).setMarks(markPercent);
-           glist.add(list.get(i));
+       ArrayList<GuessGame> list=new ArrayList<>();
+       glist.add(game);
+       for(int i=0;i<glist.size();i++){
+           long markPercent=(glist.get(i).getMarks()*100)/50;
+           glist.get(i).setMarks(markPercent);
+           list.add(glist.get(i));
            
        }
         return list;

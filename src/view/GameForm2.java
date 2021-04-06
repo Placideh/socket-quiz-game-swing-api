@@ -21,7 +21,7 @@ import socketgameServer.Operation;
  *
  * @author placideh
  */
-public class GameForm extends javax.swing.JFrame {
+public class GameForm2 extends javax.swing.JFrame {
     private static int nextQuestion=1;
      private static long date2=0;
      private static int answer=0;
@@ -37,7 +37,7 @@ public class GameForm extends javax.swing.JFrame {
     /**
      * Creates new form GameForm
      */
-    public GameForm() throws IOException {
+    public GameForm2() throws IOException {
         initComponents();
         try{
            s=new Socket("localhost",21172);
@@ -203,12 +203,13 @@ public class GameForm extends javax.swing.JFrame {
         // TODO add your handling code here:
          ArrayList<GuessGame> list = new ArrayList<>();
         Operation ops = new Operation();
+        list.add(gues);
             ArrayList<GuessGame> glist=(ArrayList<GuessGame>)ops.showWinner(gues);
-            
             for(GuessGame player:glist){
                 jTextArea1.append(player.getName()+":"+player.getMarks()+"%");
                 jTextArea1.append("\n");
             }
+//         list.remove(true);
         
     }//GEN-LAST:event_jButton2ActionPerformed
     
@@ -229,21 +230,22 @@ public class GameForm extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GameForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GameForm2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GameForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GameForm2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GameForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GameForm2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GameForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GameForm2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new GameForm().setVisible(true);
+                    new GameForm2().setVisible(true);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
