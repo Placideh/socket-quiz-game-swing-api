@@ -22,19 +22,21 @@ public class Server  {
     public static void main(String[] args) throws Exception  {
         
         ServerSocket  ss=new ServerSocket(21172);
+//        ServerSocket  ss2=new ServerSocket(21173);
         while(true){
             Socket s=ss.accept();
             Operation ops=new Operation(s);
             System.out.println("Server Started...");
             ops.start();
+//            Socket s2=ss2.accept();
+//            ListThread thread=new ListThread(s2);
+//            thread.start();
+//            System.out.println("Thread Server Started...");
+            
             
             
         }
        
     }
-    public ArrayList<GuessGame> list() {
-         
-        return new ArrayList<GuessGame>();
-    }
-   
+ 
 }

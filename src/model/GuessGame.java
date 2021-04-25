@@ -5,6 +5,8 @@
  */
 package model;
 
+import java.util.Objects;
+
 /**
  *
  * @author placideh
@@ -52,6 +54,39 @@ public class GuessGame {
     @Override
     public String toString() {
         return "GuessGame{" + "name=" + name + ", marks=" + marks + ", timeTaken=" + timeTaken + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.name);
+        hash = 29 * hash + (int) (this.marks ^ (this.marks >>> 32));
+        hash = 29 * hash + (int) (this.timeTaken ^ (this.timeTaken >>> 32));
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final GuessGame other = (GuessGame) obj;
+        if (this.marks != other.marks) {
+            return false;
+        }
+        if (this.timeTaken != other.timeTaken) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        return true;
     }
 
    

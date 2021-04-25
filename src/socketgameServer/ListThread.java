@@ -19,19 +19,22 @@ import model.GuessGame;
  */
 public class ListThread extends Thread{
     Socket s;
-    InputStream in;
     OutputStream out;
+    InputStream in;
     public ListThread(Socket s) {
         this.s=s;
     }
 
+    public ListThread() {
+    }
+    
     @Override
     public void run() {
         super.run(); //To change body of generated methods, choose Tools | Templates.
         try {
           
-                in = s.getInputStream();
                 out = s.getOutputStream();
+                in = s.getInputStream();
                 ObjectOutputStream obout = new ObjectOutputStream(out);
                 ObjectInputStream obin = new ObjectInputStream(in);
 

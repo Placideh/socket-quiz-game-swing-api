@@ -9,6 +9,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -21,7 +23,7 @@ import socketgameServer.Operation;
  *
  * @author placideh
  */
-public class GameForm extends javax.swing.JFrame {
+public class GameForm extends javax.swing.JFrame implements Runnable{
     private static int nextQuestion=1;
      private static long date2=0;
      private static int answer=0;
@@ -33,17 +35,22 @@ public class GameForm extends javax.swing.JFrame {
      Socket s;
      PrintWriter pout;
      BufferedReader bin;
+//     ObjectOutputStream obout;
+//    ObjectInputStream obin;
      String read="";
     /**
      * Creates new form GameForm
      */
     public GameForm() throws IOException {
         initComponents();
+     
         try{
            s=new Socket("localhost",21172);
            out= s.getOutputStream();
            pout = new PrintWriter(out,true);
            pout.println("users");
+//           pout.println("placideh");
+//           pout.println(date2);
            pout.println(answer);
            pout.println(nextQuestion);
            pout.flush();
@@ -51,16 +58,21 @@ public class GameForm extends javax.swing.JFrame {
            bin=new BufferedReader(new InputStreamReader(in));
             if (bin.readLine().contains("users")) {
                 int answer = Integer.parseInt(bin.readLine());
-                result += answer;
+                result = answer;
                 read = bin.readLine();
             }
            jTextField1.setText(read);
+           
         }catch(Exception e){
             
         }
         jTextField1.setEditable(false);
         jTextArea1.setEditable(false);
         jTextField3.requestFocusInWindow();
+       
+//        gues.setMarks(1);
+//        gues.setName("");
+//        gues.setTimeTaken(1);
         
     }
 
@@ -95,6 +107,11 @@ public class GameForm extends javax.swing.JFrame {
         });
 
         jButton2.setText("submit");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -177,14 +194,18 @@ public class GameForm extends javax.swing.JFrame {
             in = s.getInputStream();
             bin = new BufferedReader(new InputStreamReader(in));
             pout.println("users");
+//            pout.println(name);
+//            pout.println(date2);
             pout.println(answer);
             pout.println(nextQuestion+1);
+            
             pout.flush();
 //            String read ="";
             int answer=0;
              if(bin.readLine().contains("users")){
                  answer=Integer.parseInt(bin.readLine());
                  result =answer;
+                 jTextArea1.setText(result+"");
                  read=bin.readLine();
                  
              }
@@ -201,16 +222,92 @@ public class GameForm extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+
          ArrayList<GuessGame> list = new ArrayList<>();
-        Operation ops = new Operation();
-            ArrayList<GuessGame> glist=(ArrayList<GuessGame>)ops.showWinner(gues);
+         list.add(gues);
+            Operation ops = new Operation();
+                ArrayList<GuessGame> glist=(ArrayList<GuessGame>)ops.showWinner(gues);
+
+                for(GuessGame player:glist){
+                    jTextArea1.append(player.getName()+":"+player.getMarks()+"%");
+                    jTextArea1.append("\n");
+                }
+          
+//                glist.clear();
+//                date2 = 0;
+//            answer = 0;
+//            result = 0;
+//            gues.setName("");
+//            gues.setMarks(0);
+//            gues.setTimeTaken(0);
             
-            for(GuessGame player:glist){
-                jTextArea1.append(player.getName()+":"+player.getMarks()+"%");
-                jTextArea1.append("\n");
-            }
+//        }
+//        System.out.println(gues);
+//        date2 = 0;
+//        answer = 0;
+//        result = 0;
+//        gues.setName("");
+//        gues.setMarks(0);
+//        gues.setTimeTaken(0);
+//        if(jTextField3.getText().contains("bob")){
+////            date2 = 0;
+////            answer = 0;
+////            result = 0;
+////            gues.setName("");
+////            gues.setMarks(0);
+////            gues.setTimeTaken(0);
+//            Operation ops = new Operation();
+//            ArrayList<GuessGame> glist = (ArrayList<GuessGame>) ops.showWinner(gues);
+//
+//            for (GuessGame player : glist) {
+//                jTextArea1.append(player.getName() + ":" + player.getMarks() + "%");
+//                jTextArea1.append("\n");
+//            }
+//           
+//
+//        }
+//            try{
+//               obout = new ObjectOutputStream(out);
+//                obin = new ObjectInputStream(in);
+//                obout.writeObject(gues);
+//                GuessGame game=(GuessGame)obin.readObject();
+//                System.out.println(game);
+//                
+//            }catch(Exception e){
+//                
+//            }
         
     }//GEN-LAST:event_jButton2ActionPerformed
+//    private class HandleServer implements Runnable{
+//        private Socket clientSocket;
+//        OutputStream out2;
+//        InputStream in2;
+//        public HandleServer(Socket clientSocket) {
+//            this.clientSocket = clientSocket;
+//        }
+//        
+//        @Override
+//        public void run() {
+//            try {
+//                out2 = clientSocket.getOutputStream();
+//                in2 = clientSocket.getInputStream();
+//               obout = new ObjectOutputStream(out2);
+//                obin = new ObjectInputStream(in2);
+//                obout.writeObject(gues);
+//                GuessGame game=(GuessGame)obin.readObject();
+//                jTextArea1.append((String) obin.readObject());
+//                jTextArea1.append("\n");
+//                System.out.println(game);
+//                
+//            }catch(Exception e){
+//                
+//            }
+//        }
+//        
+//    }
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2MouseClicked
     
     /**
      * @param args the command line arguments
@@ -240,6 +337,9 @@ public class GameForm extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
+//        GameForm game=new GameForm();
+//        Thread thread =new Thread(game);
+//        thread.start();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
@@ -262,4 +362,21 @@ public class GameForm extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void run() {
+        try {
+//            Socket socket;
+//             socket=new Socket("localhost",21173);
+            GameForm game = new GameForm();
+            Thread thread = new Thread(game);
+            thread.start();
+//            HandleServer hServer=new HandleServer(socket);
+//            Thread thread2 = new Thread(hServer);
+//            thread2.start();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 }

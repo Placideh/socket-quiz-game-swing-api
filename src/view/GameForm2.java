@@ -21,7 +21,7 @@ import socketgameServer.Operation;
  *
  * @author placideh
  */
-public class GameForm2 extends javax.swing.JFrame {
+public class GameForm2 extends javax.swing.JFrame implements Runnable{
     private static int nextQuestion=1;
      private static long date2=0;
      private static int answer=0;
@@ -242,15 +242,18 @@ public class GameForm2 extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new GameForm2().setVisible(true);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
+        GameForm2 game=new GameForm2();
+        Thread thread=new Thread(game);
+        thread.start();
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                try {
+//                    new GameForm2().setVisible(true);
+//                } catch (IOException ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -264,4 +267,13 @@ public class GameForm2 extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void run() {
+        try {
+            new GameForm2().setVisible(true);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 }
